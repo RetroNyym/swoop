@@ -1,9 +1,17 @@
 # 🐦➡️📱 Swoop
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/Node-18%2B-339933)](https://nodejs.org)
+[![Platform](https://img.shields.io/badge/Platform-Windows-blue)](#-kurulum)
+
 **Twitter'dan video/GIF indirip tek tıkla WhatsApp'a gönderen, içinde GIF / Sticker / Emoji kütüphanesi barındıran yerel program.**
 
 Kuş (Twitter) süzülür, paketi telefonuna (WhatsApp) bırakır. 🪶
 
+> 🔧 **Part of the Retro+ tool family** — alongside [deaddeps](https://github.com/RetroNyym), tubelens, Retro+ Download Manager & more. Building in public at [@RetroOpsS](https://x.com/RetroOpsS).
+>
+> 🌍 The panel speaks **Turkish & English** — switch with the 🇬🇧/🇹🇷 button in the header.
+>
 > ⚠️ Windows için tasarlanmıştır. Tamamen yerel çalışır — sunucu yok, bulut yok, veriler sizin bilgisayarınızda kalır.
 
 ---
@@ -19,6 +27,7 @@ Kuş (Twitter) süzülür, paketi telefonuna (WhatsApp) bırakır. 🪶
 | ✨ **Sticker Üretici** | Herhangi bir resim/GIF → 512×512 WhatsApp sticker'ı (animasyonlu GIF'ler hareketli kalır) |
 | 🎞 **GIF Gönderimi** | GIF'ler WhatsApp'ta GIF olarak oynar |
 | 😀 **Emoji Kütüphanesi** | Kategorili arama; kopyala veya doğrudan sohbete gönder |
+| 🌍 **TR / EN** | Panel arayüzü iki dilli — üstteki düğmeyle değiştir |
 
 ## 🚀 Kurulum
 

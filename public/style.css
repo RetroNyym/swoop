@@ -19,6 +19,12 @@ header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 22px; border-bottom: 1px solid var(--cizgi);
 }
+.baslik-sag { display: flex; align-items: center; gap: 10px; }
+.dil-btn {
+  background: #1a2030; border: 1px solid var(--cizgi); color: var(--metin);
+  padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px;
+}
+.dil-btn:hover { border-color: var(--mavi); }
 .logo { font-size: 19px; font-weight: 700; letter-spacing: .3px; }
 .durum-kutu {
   padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 600;

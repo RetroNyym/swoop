@@ -284,7 +284,7 @@ async function stickerYap(dosyaYolu) {
 }
 
 async function medyaGonder(jid, dosyaYolu, secenek = {}) {
-  if (!sock || waDurum !== 'bagli') throw new Error('WhatsApp bagli degil');
+  if (!sock || waDurum !== 'bagli') throw new Error('WhatsApp is not connected');
   const buf = await fsp.readFile(dosyaYolu);
   const ext = path.extname(dosyaYolu).toLowerCase();
   if (ext === '.webp') {
@@ -318,9 +318,9 @@ app.get('/api/kisiler', (req, res) => {
 
 app.post('/api/indir', async (req, res) => {
   const { url, kalite = 'en-iyi', kime = '', baslik = '', otomatikGonder = false } = req.body || {};
-  if (!url || !/https?:\/\//.test(url)) return res.status(400).json({ hata: 'Gecerli bir link girin' });
+  if (!url || !/https?:\/\//.test(url)) return res.status(400).json({ hata: 'Please enter a valid link' });
   if (otomatikGonder && !(waDurum === 'bagli' || await bagliBekle())) {
-    return res.status(400).json({ hata: 'Otomatik gonderim icin WhatsApp bagli olmali' });
+    return res.status(400).json({ hata: 'WhatsApp must be connected for auto-send' });
   }
   res.json({ ok: true });
 
@@ -357,7 +357,7 @@ app.post('/api/indir', async (req, res) => {
       .filter((f) => !oncekiDosyalar.has(f))
       .filter((f) => !/\.(part|ytdl)$/i.test(f) && !/\.part-Frag/i.test(f))
       .map((f) => path.join(INDIRILENLER, f));
-    if (!yeniDosyalar.length) throw new Error('Indirilen dosya bulunamadi (link video/GIF iceriyor mu?)');
+    if (!yeniDosyalar.length) throw new Error('No file downloaded — does the link contain a video or GIF?');
     return yeniDosyalar;
   }
 
@@ -413,10 +413,10 @@ app.delete('/api/kutuphane/:id', async (req, res) => {
 app.post('/api/sticker-yap', async (req, res) => {
   try {
     const k = kutuphane.find((x) => x.id === req.body.id);
-    if (!k) return res.status(404).json({ hata: 'Kayit bulunamadi' });
+    if (!k) return res.status(404).json({ hata: 'Item not found' });
     const dosya = path.join(DATA, k.dosya);
     if (dosyaTuru(dosya) === 'video') {
-      return res.status(400).json({ hata: 'Videodan dogrudan sticker yapilamaz; once GIF/animasyon olmali' });
+      return res.status(400).json({ hata: 'Videos cannot be turned into stickers directly — use a GIF or animated image' });
     }
     const hedef = await stickerYap(dosya);
     const kayit = kutuphaneyeEkle(hedef, path.basename(hedef));
@@ -430,11 +430,11 @@ app.post('/api/gonder', async (req, res) => {
   try {
     const { id, kime, baslik = '', gifOlarak = false } = req.body || {};
     const k = kutuphane.find((x) => x.id === id);
-    if (!k) return res.status(404).json({ hata: 'Kayit bulunamadi' });
+    if (!k) return res.status(404).json({ hata: 'Item not found' });
     const jid = numaraJidYap(kime);
-    if (!jid) return res.status(400).json({ hata: 'Kisi veya numara secin' });
+    if (!jid) return res.status(400).json({ hata: 'Pick a contact or enter a number' });
     if (waDurum !== 'bagli' && !(await bagliBekle())) {
-      return res.status(400).json({ hata: 'WhatsApp bagli degil' });
+      return res.status(400).json({ hata: 'WhatsApp is not connected' });
     }
     await medyaGonder(jid, path.join(DATA, k.dosya), { baslik, gifOlarak });
     res.json({ ok: true });
@@ -447,9 +447,9 @@ app.post('/api/emoji-gonder', async (req, res) => {
   try {
     const { emoji, kime } = req.body || {};
     const jid = numaraJidYap(kime);
-    if (!emoji || !jid) return res.status(400).json({ hata: 'Emoji ve kisi gerekli' });
+    if (!emoji || !jid) return res.status(400).json({ hata: 'Emoji and contact are required' });
     if (waDurum !== 'bagli' && !(await bagliBekle())) {
-      return res.status(400).json({ hata: 'WhatsApp bagli degil' });
+      return res.status(400).json({ hata: 'WhatsApp is not connected' });
     }
     await sock.sendMessage(jid, { text: emoji });
     res.json({ ok: true });
@@ -461,10 +461,10 @@ app.post('/api/emoji-gonder', async (req, res) => {
 app.post('/api/yukle', async (req, res) => {
   try {
     const { ad, veri } = req.body || {}; // veri: dataURL
-    if (!ad || !veri || !/^data:/.test(veri)) return res.status(400).json({ hata: 'Gecersiz veri' });
+    if (!ad || !veri || !/^data:/.test(veri)) return res.status(400).json({ hata: 'Invalid data' });
     const b64 = veri.slice(veri.indexOf(',') + 1);
     if (!['.mp4', '.gif', '.webp', '.jpg', '.jpeg', '.png', '.webm', '.mov'].includes(path.extname(ad).toLowerCase())) {
-      return res.status(400).json({ hata: 'Desteklenmeyen dosya turu' });
+      return res.status(400).json({ hata: 'Unsupported file type' });
     }
     const hedefAd = rastgeleAd() + '-' + path.basename(ad).replace(/[^\w.\- ]/g, '_');
     const hedef = path.join(INDIRILENLER, hedefAd);

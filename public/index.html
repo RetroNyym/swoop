@@ -9,44 +9,47 @@
 <body>
 <header>
   <div class="logo">🐦➡️📱 Swoop</div>
-  <div id="wa-durum" class="durum-kutu bagli-degil">Bağlı değil</div>
+  <div class="baslik-sag">
+    <div id="wa-durum" class="durum-kutu bagli-degil" data-i18n="durum_kapali">Bağlı değil</div>
+    <button id="dil-btn" class="dil-btn" title="Language">🇬🇧 EN</button>
+  </div>
 </header>
 
 <nav>
-  <button class="sekme aktif" data-hedef="indir">🐦 Twitter İndir</button>
-  <button class="sekme" data-hedef="kutuphane">📚 Kütüphane</button>
-  <button class="sekme" data-hedef="stickerlar">✨ Stickerlar</button>
-  <button class="sekme" data-hedef="emojiler">😀 Emojiler</button>
-  <button class="sekme" data-hedef="baglanti">📱 WhatsApp Bağlantı</button>
+  <button class="sekme aktif" data-hedef="indir" data-i18n="tab_indir">🐦 Twitter İndir</button>
+  <button class="sekme" data-hedef="kutuphane" data-i18n="tab_kutuphane">📚 Kütüphane</button>
+  <button class="sekme" data-hedef="stickerlar" data-i18n="tab_stickerlar">✨ Stickerlar</button>
+  <button class="sekme" data-hedef="emojiler" data-i18n="tab_emojiler">😀 Emojiler</button>
+  <button class="sekme" data-hedef="baglanti" data-i18n="tab_baglanti">📱 WhatsApp Bağlantı</button>
 </nav>
 
 <main>
   <!-- İNDİRME -->
   <section id="sekme-indir" class="panel aktif">
     <div class="kart">
-      <h2>🐦 Swoop — Twitter Video / GIF İndir</h2>
-      <p class="aciklama">Tweet (veya x.com) linkini yapıştır. Video mp4 olarak iner; Twitter GIF'leri de mp4 olarak iner ve WhatsApp'ta GIF gibi oynar.</p>
-      <input id="tweet-url" type="text" placeholder="https://x.com/kullanici/status/123456789..." spellcheck="false">
+      <h2 data-i18n="indir_baslik">🐦 Swoop — Twitter Video / GIF İndir</h2>
+      <p class="aciklama" data-i18n="indir_aciklama">Tweet (veya x.com) linkini yapıştır. Video mp4 olarak iner; Twitter GIF'leri de mp4 olarak iner ve WhatsApp'ta GIF gibi oynar.</p>
+      <input id="tweet-url" type="text" data-i18n-ph="indir_url_ph" placeholder="https://x.com/kullanici/status/123456789..." spellcheck="false">
       <div class="satir">
         <select id="kalite">
-          <option value="en-iyi">En iyi kalite</option>
-          <option value="720">En fazla 720p</option>
-          <option value="480">En fazla 480p</option>
+          <option value="en-iyi" data-i18n="kalite_en_iyi">En iyi kalite</option>
+          <option value="720" data-i18n="kalite_720">En fazla 720p</option>
+          <option value="480" data-i18n="kalite_480">En fazla 480p</option>
         </select>
-        <label class="onay"><input id="oto-gonder" type="checkbox"> İndirince WhatsApp'a gönder</label>
+        <label class="onay"><input id="oto-gonder" type="checkbox"> <span data-i18n="oto_gonder">İndirince WhatsApp'a gönder</span></label>
       </div>
       <div id="oto-gonder-alan" class="satir gizli">
         <select id="oto-kime"><option value="">Kişi seç…</option></select>
-        <input id="oto-baslik" type="text" placeholder="Açıklama (isteğe bağlı)">
+        <input id="oto-baslik" type="text" data-i18n-ph="gonder_modal_baslik_ph" placeholder="Açıklama (isteğe bağlı)">
       </div>
-      <button id="indir-btn" class="ana-btn">⬇️ İndir</button>
+      <button id="indir-btn" class="ana-btn" data-i18n="indir_btn">⬇️ İndir</button>
       <div id="indir-ilerleme" class="ilerleme gizli"><div class="cubuk"><div class="dolgu"></div></div><span class="metin"></span></div>
       <div id="indir-sonuc" class="sonuc"></div>
     </div>
 
     <div class="kart">
-      <h2>📥 Kendi dosyanı ekle</h2>
-      <p class="aciklama">Bilgisayarından GIF, resim veya video seçip kütüphaneye ekle; sonra sticker yapabilir veya WhatsApp'a gönderebilirsin.</p>
+      <h2 data-i18n="yukle_baslik">📥 Kendi dosyanı ekle</h2>
+      <p class="aciklama" data-i18n="yukle_aciklama">Bilgisayarından GIF, resim veya video seçip kütüphaneye ekle; sonra sticker yapabilir veya WhatsApp'a gönderebilirsin.</p>
       <input id="yukle-dosya" type="file" multiple accept=".mp4,.gif,.webp,.jpg,.jpeg,.png,.webm,.mov">
       <div id="yukle-sonuc" class="sonuc"></div>
     </div>
@@ -55,13 +58,13 @@
   <!-- KÜTÜPHANE -->
   <section id="sekme-kutuphane" class="panel">
     <div class="kart">
-      <h2>📚 Kütüphane</h2>
+      <h2 data-i18n="kutuphane_baslik">📚 Kütüphane</h2>
       <div class="filtre">
-        <button class="f-btn aktif" data-tur="hepsi">Hepsi</button>
-        <button class="f-btn" data-tur="video">🎬 Video</button>
-        <button class="f-btn" data-tur="gif">🎞 GIF</button>
-        <button class="f-btn" data-tur="resim">🖼 Resim</button>
-        <button class="f-btn" data-tur="sticker">✨ Sticker</button>
+        <button class="f-btn aktif" data-tur="hepsi" data-i18n="filtre_hepsi">Hepsi</button>
+        <button class="f-btn" data-tur="video" data-i18n="filtre_video">🎬 Video</button>
+        <button class="f-btn" data-tur="gif" data-i18n="filtre_gif">🎞 GIF</button>
+        <button class="f-btn" data-tur="resim" data-i18n="filtre_resim">🖼 Resim</button>
+        <button class="f-btn" data-tur="sticker" data-i18n="filtre_sticker">✨ Sticker</button>
       </div>
       <div id="kutuphane-liste" class="izgara"></div>
     </div>
@@ -70,8 +73,8 @@
   <!-- STICKERLAR -->
   <section id="sekme-stickerlar" class="panel">
     <div class="kart">
-      <h2>✨ Sticker Kütüphanesi</h2>
-      <p class="aciklama">Kütüphanedeki GIF/resimlerin üzerine "Sticker Yap" dersen, 512×512 WhatsApp sticker'ı burada görünür. Bağlıyken tek tıkla sohbete sticker atabilirsin.</p>
+      <h2 data-i18n="sticker_baslik">✨ Sticker Kütüphanesi</h2>
+      <p class="aciklama" data-i18n="sticker_aciklama">Kütüphanedeki GIF/resimlerin üzerine "Sticker Yap" dersen, 512×512 WhatsApp sticker'ı burada görünür. Bağlıyken tek tıkla sohbete sticker atabilirsin.</p>
       <div id="sticker-liste" class="izgara"></div>
     </div>
   </section>
@@ -79,18 +82,18 @@
   <!-- EMOJILER -->
   <section id="sekme-emojiler" class="panel">
     <div class="kart">
-      <h2>😀 Emoji Kütüphanesi</h2>
-      <input id="emoji-ara" type="text" placeholder="Ara… (ör: kalp, kedi, gülümseme)">
+      <h2 data-i18n="emoji_baslik">😀 Emoji Kütüphanesi</h2>
+      <input id="emoji-ara" type="text" data-i18n-ph="emoji_ara_ph" placeholder="Ara… (ör: kalp, kedi, gülümseme)">
       <div id="emoji-kategoriler" class="cetikler"></div>
       <div id="emoji-liste" class="emoji-izgara"></div>
     </div>
     <div class="kart">
-      <h2>📤 Emoji Gönder</h2>
+      <h2 data-i18n="emoji_gonder_baslik">📤 Emoji Gönder</h2>
       <div class="satir">
         <span id="secili-emoji" class="buyuk-emoji">👆</span>
         <select id="emoji-kime"><option value="">Kişi seç…</option></select>
-        <button id="emoji-gonder-btn" class="ana-btn kucuk">WhatsApp'a Gönder</button>
-        <button id="emoji-kopyala-btn" class="ikincil-btn kucuk">Kopyala</button>
+        <button id="emoji-gonder-btn" class="ana-btn kucuk" data-i18n="emoji_gonder_btn">WhatsApp'a Gönder</button>
+        <button id="emoji-kopyala-btn" class="ikincil-btn kucuk" data-i18n="emoji_kopyala_btn">Kopyala</button>
       </div>
     </div>
   </section>
@@ -98,18 +101,18 @@
   <!-- BAGLANTI -->
   <section id="sekme-baglanti" class="panel">
     <div class="kart merkez">
-      <h2>📱 WhatsApp Bağlantısı</h2>
-      <p class="aciklama">WhatsApp'ta <b>Bağlı Cihazlar → Cihaz Bağla</b> yolunu izleyip QR kodu okut.</p>
+      <h2 data-i18n="baglanti_baslik">📱 WhatsApp Bağlantısı</h2>
+      <p class="aciklama" data-i18n="baglanti_aciklama">WhatsApp'ta <b>Bağlı Cihazlar → Cihaz Bağla</b> yolunu izleyip QR kodu okut.</p>
       <div id="qr-alan">
-        <div id="qr-bekleme">Bağlantı bekleniyor…</div>
+        <div id="qr-bekleme" data-i18n="qr_bos">QR kod burada görünecek…</div>
         <img id="qr-kod" class="gizli" alt="QR Kodu">
       </div>
       <div id="baglanti-mesaj" class="sonuc"></div>
       <div class="satir merkez-satir">
-        <button id="baglanti-yenile" class="ikincil-btn kucuk">🔄 Yeniden Bağlan</button>
-        <button id="baglanti-cikis" class="ikincil-btn kucuk kirmizi">🚪 Oturumu Kapat</button>
+        <button id="baglanti-yenile" class="ikincil-btn kucuk" data-i18n="btn_yeniden_baglan">🔄 Yeniden Bağlan</button>
+        <button id="baglanti-cikis" class="ikincil-btn kucuk kirmizi" data-i18n="btn_oturum_kapat">🚪 Oturumu Kapat</button>
       </div>
-      <p class="uyari">⚠️ Bu program resmi olmayan bir kütüphane (Baileys) kullanır. WhatsApp Web gibi çalışır. Aşırı/istenmeyen mesaj gönderimi hesabın askıya alınmasına yol açabilir; sorumlu kullanın.</p>
+      <p class="uyari" data-i18n="uyari_baileys">⚠️ Bu program resmi olmayan bir kütüphane (Baileys) kullanır. WhatsApp Web gibi çalışır. Aşırı/istenmeyen mesaj gönderimi hesabın askıya alınmasına yol açabilir; sorumlu kullanın.</p>
     </div>
   </section>
 </main>
@@ -117,15 +120,15 @@
 <!-- GÖNDERME MODALI -->
 <div id="gonder-modal" class="modal gizli">
   <div class="modal-icerik">
-    <h3 id="gonder-modal-baslik">WhatsApp'a Gönder</h3>
+    <h3 id="gonder-modal-baslik">📤 Gönder</h3>
     <div id="gonder-onizleme" class="gonder-onizleme"></div>
     <select id="gonder-kime"><option value="">Kişi seç…</option></select>
-    <input id="gonder-numara" type="text" placeholder="…veya numara yaz: 905XXXXXXXXX">
-    <input id="gonder-baslik" type="text" placeholder="Açıklama (isteğe bağlı)">
-    <label id="gif-onay-satiri" class="onay gizli"><input id="gonder-gif" type="checkbox" checked> GIF olarak gönder (hareketli oynar)</label>
+    <input id="gonder-numara" type="text" data-i18n-ph="gonder_modal_kime_ph" placeholder="…veya numara yaz: 905XXXXXXXXX">
+    <input id="gonder-baslik" type="text" data-i18n-ph="gonder_modal_baslik_ph" placeholder="Açıklama (isteğe bağlı)">
+    <label id="gif-onay-satiri" class="onay gizli"><input id="gonder-gif" type="checkbox" checked> <span data-i18n="gif_olarak">GIF olarak gönder (hareketli oynar)</span></label>
     <div class="satir merkez-satir">
-      <button id="gonder-onay" class="ana-btn kucuk">✅ Gönder</button>
-      <button id="gonder-iptal" class="ikincil-btn kucuk">Vazgeç</button>
+      <button id="gonder-onay" class="ana-btn kucuk" data-i18n="btn_gonder">✅ Gönder</button>
+      <button id="gonder-iptal" class="ikincil-btn kucuk" data-i18n="btn_vazgec">Vazgeç</button>
     </div>
     <div id="gonder-sonuc" class="sonuc"></div>
   </div>
@@ -134,6 +137,7 @@
 <div id="bildirim" class="bildirim gizli"></div>
 
 <script src="/socket.io/socket.io.js"></script>
+<script src="/diller.js"></script>
 <script src="/emojiler.js"></script>
 <script src="/app.js"></script>
 </body>

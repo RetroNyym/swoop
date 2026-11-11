@@ -1,22 +1,49 @@
-/* TwWa Panel arayuz mantigi */
+/* Swoop arayuz mantigi (TR/EN) */
 'use strict';
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
 
-const durumKutu = $('#wa-durum');
-const DURUM_METIN = {
-  kapali: 'Bağlı değil',
-  baglaniyor: 'Bağlanıyor…',
-  qr: 'QR bekleniyor',
-  beklemede: 'Yeniden bağlanıyor…',
-  bagli: '✅ WhatsApp bağlı',
-};
+/* ---------------- Dil ---------------- */
+let DIL_ADI = localStorage.getItem('dil') || 'tr';
+let T = DILLER[DIL_ADI];
+
+function t(anahtar) { return T[anahtar] || DILLER.tr[anahtar] || anahtar; }
+
+function dilUygula() {
+  document.documentElement.lang = DIL_ADI;
+  $('#dil-btn').textContent = DIL_ADI === 'tr' ? '🇬🇧 EN' : '🇹🇷 TR';
+  $$('[data-i18n]').forEach((el) => { el.innerHTML = t(el.dataset.i18n); });
+  $$('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.dataset.i18nPh); });
+  durumKutu.textContent = t('durum_' + sonWaDurum);
+  durumKutu.className = 'durum-kutu ' + sonWaDurum;
+  $$('[data-hedef]').forEach((btn) => {
+    if (btn.classList.contains('sekme')) {
+      const sec = document.querySelectorAll('.sekme');
+    }
+  });
+  emojiKategorileriCiz();
+  kutuphaneCiz(kutuphaneVerisi);
+}
+
+function dilDegistir() {
+  DIL_ADI = DIL_ADI === 'tr' ? 'en' : 'tr';
+  localStorage.setItem('dil', DIL_ADI);
+  T = DILLER[DIL_ADI];
+  dilUygula();
+}
+
+$('#dil-btn').addEventListener('click', dilDegistir);
+
+/* ---------------- Durum degiskenleri ---------------- */
 let aktifSekme = 'indir';
 let kutuphaneVerisi = [];
 let kisiListesi = [];
 let filtreTur = 'hepsi';
 let seciliEmoji = '';
+let sonWaDurum = 'kapali';
+
+const durumKutu = $('#wa-durum');
 
 /* ---------------- Sekmeler ---------------- */
 $$('.sekme').forEach((b) => b.addEventListener('click', () => {
@@ -26,8 +53,8 @@ $$('.sekme').forEach((b) => b.addEventListener('click', () => {
   $('#sekme-' + b.dataset.hedef).classList.add('aktif');
   aktifSekme = b.dataset.hedef;
   if (aktifSekme === 'kutuphane') kutuphaneYukle();
-  if (aktifSekme === 'stickerlar') stickerlariYukle();
-  if (aktifSekme === 'emojiler' && !emojilerHazir) emojileriCiz();
+  if (aktifSekme === 'stickerlar') kutuphaneYukle();
+  if (aktifSekme === 'emojiler' && !emojilerHazir) emojiKategorileriCiz();
 }));
 
 $$('.f-btn').forEach((b) => b.addEventListener('click', () => {
@@ -51,13 +78,13 @@ function bildir(mesaj, tur = '') {
 const socket = io();
 
 socket.on('wa:durum', (d) => {
-  durumKutu.textContent = DURUM_METIN[d] || d;
+  sonWaDurum = d;
+  durumKutu.textContent = t('durum_' + d) || d;
   durumKutu.className = 'durum-kutu ' + d;
-  const qrAlan = $('#qr-alan');
   const qrBekleme = $('#qr-bekleme');
   if (d === 'bagli') {
     $('#qr-kod').classList.add('gizli');
-    qrBekleme.textContent = '✅ Bağlandı! Artık gönderebilirsin.';
+    qrBekleme.textContent = t('qr_bagli');
     qrBekleme.classList.remove('uyari-renk', 'gizli');
     kisileriYukle();
   } else if (d === 'qr') {
@@ -66,7 +93,7 @@ socket.on('wa:durum', (d) => {
     $('#qr-kod').classList.add('gizli');
     qrBekleme.classList.remove('gizli');
     qrBekleme.classList.toggle('uyari-renk', d === 'beklemede' || d === 'baglaniyor');
-    qrBekleme.textContent = d === 'beklemede' || d === 'baglaniyor' ? 'Bağlantı kuruluyor…' : 'QR kod burada görünecek…';
+    qrBekleme.textContent = (d === 'beklemede' || d === 'baglaniyor') ? t('qr_baglaniyor') : t('qr_bos');
   }
 });
 
@@ -90,7 +117,7 @@ async function kisileriYukle() {
     for (const id of ['oto-kime', 'emoji-kime', 'gonder-kime']) {
       const sec = $('#' + id);
       const secili = sec.value;
-      sec.innerHTML = '<option value="">Kişi seç…</option>' +
+      sec.innerHTML = `<option value="">${t('kisi_sec')}</option>` +
         liste.map((k) => `<option value="${k.jid}">${k.ad}</option>`).join('');
       sec.value = secili;
     }
@@ -105,12 +132,12 @@ $('#oto-gonder').addEventListener('change', (e) => {
 
 $('#indir-btn').addEventListener('click', async () => {
   const url = $('#tweet-url').value.trim();
-  if (!url) return bildir('Önce tweet linkini yapıştır', 'hata');
+  if (!url) return;
   const btn = $('#indir-btn');
   btn.disabled = true;
   $('#indir-sonuc').textContent = '';
   $('#indir-ilerleme').classList.remove('gizli');
-  ilerlemeCiz(0, 'Başlatılıyor…');
+  ilerlemeCiz(0, t('ilerleme_baslat'));
   try {
     await fetch('/api/indir', {
       method: 'POST',
@@ -126,7 +153,7 @@ $('#indir-btn').addEventListener('click', async () => {
   } catch (e) {
     btn.disabled = false;
     $('#indir-ilerleme').classList.add('gizli');
-    $('#indir-sonuc').textContent = 'Hata: ' + e.message;
+    $('#indir-sonuc').textContent = 'Error: ' + e.message;
     $('#indir-sonuc').className = 'sonuc hata';
   }
 });
@@ -137,9 +164,9 @@ function ilerlemeCiz(yuzde, metin) {
 }
 
 socket.on('ilerleme', (d) => {
-  if (d.tur === 'indirme') ilerlemeCiz(d.yuzde, `İndiriliyor… %${d.yuzde}`);
-  else if (d.tur === 'arac') ilerlemeCiz(d.yuzde, `İlk kurulum: ${d.ad}… %${d.yuzde || ''}`);
-  else if (d.tur === 'gonderim') ilerlemeCiz(100, d.mesaj || 'Gönderiliyor…');
+  if (d.tur === 'indirme') ilerlemeCiz(d.yuzde, `${t('ilerleme_indiriliyor')} %${d.yuzde}`);
+  else if (d.tur === 'arac') ilerlemeCiz(d.yuzde, `${t('ilerleme_kurulum')} ${d.ad}… %${d.yuzde || ''}`);
+  else if (d.tur === 'gonderim') ilerlemeCiz(100, d.mesaj || t('b_gonderildi'));
 });
 
 socket.on('indirme:bitti', (d) => {
@@ -148,22 +175,22 @@ socket.on('indirme:bitti', (d) => {
   $('#indir-ilerleme').classList.add('gizli');
   const sonuc = $('#indir-sonuc');
   if (d.ok) {
-    ilerlemeCiz(100, 'Tamamlandı');
+    ilerlemeCiz(100, '✔');
     sonuc.className = 'sonuc ok';
     sonuc.textContent = (d.kayitlar || []).map((k) => '✅ ' + k.ad).join('\n');
-    bildir('İndirme tamamlandı 🎉', 'ok');
+    bildir(t('b_indirildi'), 'ok');
     $('#tweet-url').value = '';
     kutuphaneYukle();
   } else {
     ilerlemeCiz(0, '');
     sonuc.className = 'sonuc hata';
-    sonuc.textContent = '❌ ' + (d.hata || 'Bilinmeyen hata');
+    sonuc.textContent = '❌ ' + (d.hata || 'Error');
   }
 });
 
 socket.on('gonderim:sonuc', (d) => {
-  if (d.ok) bildir('📤 ' + (d.mesaj || 'Gönderildi'), 'ok');
-  else bildir('❌ ' + (d.hata || 'Gönderilemedi'), 'hata');
+  if (d.ok) bildir(t('b_gonderildi'), 'ok');
+  else bildir('❌ ' + (d.hata || 'Error'), 'hata');
 });
 
 /* ---------------- Kutuphane ---------------- */
@@ -179,19 +206,18 @@ function kutuphaneCiz(liste) {
   const hedef = $('#kutuphane-liste');
   const filtreli = filtreTur === 'hepsi' ? liste : liste.filter((k) => k.tur === filtreTur);
   if (!filtreli.length) {
-    hedef.innerHTML = '<p class="aciklama">Henüz öğe yok. Twitter sekmesinden bir şey indir 😉</p>';
+    hedef.innerHTML = `<p class="aciklama">${t('kutuphane_bos')}</p>`;
     return;
   }
   hedef.innerHTML = filtreli.map(ogeHtml).join('');
   olaylariBag(hedef);
 }
 
-function stickerlariYukle() { kutuphaneYukle(); }
 function stickerlariCiz(liste) {
   const hedef = $('#sticker-liste');
   const stickerlar = liste.filter((k) => k.tur === 'sticker');
   if (!stickerlar.length) {
-    hedef.innerHTML = '<p class="aciklama">Henüz sticker yok. Kütüphanedeki GIF/resimlere "✨ Sticker" butonuna bas.</p>';
+    hedef.innerHTML = `<p class="aciklama">${t('sticker_bos')}</p>`;
     return;
   }
   hedef.innerHTML = stickerlar.map(ogeHtml).join('');
@@ -202,7 +228,7 @@ function ogeHtml(k) {
   const onizleme = (k.tur === 'video' || k.tur === 'gif')
     ? `<video class="onizleme" src="${k.url}" preload="metadata" muted></video>`
     : `<img class="onizleme ${k.tur === 'sticker' ? 'sticker' : ''}" src="${k.url}" loading="lazy" alt="">`;
-  const stickerBtn = (k.tur === 'gif' || k.tur === 'resim') ? `<button data-islem="sticker" data-id="${k.id}" class="ikincil-btn kucuk">✨ Sticker</button>` : '';
+  const stickerBtn = (k.tur === 'gif' || k.tur === 'resim') ? `<button data-islem="sticker" data-id="${k.id}" class="ikincil-btn kucuk">${t('etiket_sticker')}</button>` : '';
   return `
   <div class="kart-oge" data-id="${k.id}">
     ${onizleme}
@@ -211,9 +237,9 @@ function ogeHtml(k) {
       <div class="turlar">${k.tur} · ${(k.boyut / 1048576).toFixed(1)} MB</div>
     </div>
     <div class="butonlar">
-      <button data-islem="gonder" data-id="${k.id}" data-tur="${k.tur}" class="ikincil-btn kucuk gonder-btn">📤 Gönder</button>
+      <button data-islem="gonder" data-id="${k.id}" data-tur="${k.tur}" class="ikincil-btn kucuk gonder-btn">${t('etiket_gonder')}</button>
       ${stickerBtn}
-      <button data-islem="sil" data-id="${k.id}" class="ikincil-btn kucuk kirmizi">🗑</button>
+      <button data-islem="sil" data-id="${k.id}" class="ikincil-btn kucuk kirmizi">${t('etiket_sil')}</button>
     </div>
   </div>`;
 }
@@ -238,7 +264,7 @@ async function stickerYap(id, btn) {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }),
     }).then((x) => x.json());
     if (r.hata) throw new Error(r.hata);
-    bildir('✨ Sticker oluşturuldu', 'ok');
+    bildir(t('b_sticker_ok'), 'ok');
     kutuphaneYukle();
   } catch (e) {
     bildir('❌ ' + e.message, 'hata');
@@ -247,7 +273,7 @@ async function stickerYap(id, btn) {
 }
 
 async function sil(id) {
-  if (!confirm('Bu öğe silinsin mi?')) return;
+  if (!confirm(t('b_silme_sorusu'))) return;
   await fetch('/api/kutuphane/' + id, { method: 'DELETE' });
   kutuphaneYukle();
 }
@@ -255,14 +281,15 @@ async function sil(id) {
 /* ---------------- Gonder modal ---------------- */
 function gonderModaliAc(kayit, tur) {
   if (!aktifDurumBagli()) {
-    bildir('Önce WhatsApp sekmesinden bağlan', 'hata');
+    bildir(t('b_once_baglan'), 'hata');
     $$('.sekme').forEach((x) => x.classList.remove('aktif'));
     $$('.panel').forEach((x) => x.classList.remove('aktif'));
     document.querySelector('[data-hedef="baglanti"]').classList.add('aktif');
     $('#sekme-baglanti').classList.add('aktif');
+    aktifSekme = 'baglanti';
     return;
   }
-  $('#gonder-modal-baslik').textContent = '📤 ' + kayit.ad;
+  $('#gonder-modal-baslik').textContent = t('etiket_gonder') + ' · ' + kayit.ad;
   $('#gonder-onizleme').innerHTML = (tur === 'video' || tur === 'gif')
     ? `<video src="${kayit.url}" autoplay muted loop></video>`
     : `<img src="${kayit.url}" alt="">`;
@@ -280,7 +307,7 @@ $('#gonder-iptal').addEventListener('click', () => $('#gonder-modal').classList.
 
 $('#gonder-onay').addEventListener('click', async () => {
   const kime = $('#gonder-kime').value || $('#gonder-numara').value.trim();
-  if (!kime) { $('#gonder-sonuc').textContent = 'Kişi veya numara seç'; $('#gonder-sonuc').className = 'sonuc hata'; return; }
+  if (!kime) { $('#gonder-sonuc').textContent = t('s_kisi_numara_gerekli'); $('#gonder-sonuc').className = 'sonuc hata'; return; }
   const btn = $('#gonder-onay');
   btn.disabled = true;
   try {
@@ -295,7 +322,7 @@ $('#gonder-onay').addEventListener('click', async () => {
     }).then((x) => x.json());
     if (r.hata) throw new Error(r.hata);
     $('#gonder-modal').classList.add('gizli');
-    bildir('📤 Gönderildi', 'ok');
+    bildir(t('b_gonderildi'), 'ok');
   } catch (e) {
     $('#gonder-sonuc').textContent = '❌ ' + e.message;
     $('#gonder-sonuc').className = 'sonuc hata';
@@ -308,7 +335,7 @@ $('#yukle-dosya').addEventListener('change', async (e) => {
   const dosyalar = Array.from(e.target.files || []);
   const sonuc = $('#yukle-sonuc');
   sonuc.className = 'sonuc';
-  sonuc.textContent = 'Yükleniyor…';
+  sonuc.textContent = t('b_yukleniyor');
   let ok = 0, hata = 0;
   for (const d of dosyalar) {
     try {
@@ -327,7 +354,7 @@ $('#yukle-dosya').addEventListener('change', async (e) => {
     } catch { hata++; }
   }
   sonuc.className = 'sonuc ' + (hata ? 'hata' : 'ok');
-  sonuc.textContent = `✅ ${ok} dosya eklendi` + (hata ? `, ❌ ${hata} başarısız` : '');
+  sonuc.textContent = t('b_dosya_eklendi').replace('%d', ok) + (hata ? t('b_dosya_hata').replace('%d', hata) : '');
   e.target.value = '';
   kutuphaneYukle();
 });
@@ -336,10 +363,10 @@ $('#yukle-dosya').addEventListener('change', async (e) => {
 let emojilerHazir = false;
 let aktifKategori = 'hepsi';
 
-function emojileriCiz() {
+function emojiKategorileriCiz() {
   const katAlan = $('#emoji-kategoriler');
-  katAlan.innerHTML = `<button class="cetik ${aktifKategori === 'hepsi' ? 'aktif' : ''}" data-kat="hepsi">Hepsi</button>` +
-    EMOJI_KATEGORILER.map((k) => `<button class="cetik" data-kat="${k.ad}">${k.ad}</button>`).join('');
+  katAlan.innerHTML = `<button class="cetik ${aktifKategori === 'hepsi' ? 'aktif' : ''}" data-kat="hepsi">${t('kategori_hepsi')}</button>` +
+    EMOJI_KATEGORILER.map((k) => `<button class="cetik" data-kat="${DIL_ADI === 'tr' ? k.ad : k.en}">${DIL_ADI === 'tr' ? k.ad : k.en}</button>`).join('');
   katAlan.querySelectorAll('.cetik').forEach((c) => c.addEventListener('click', () => {
     aktifKategori = c.dataset.kat;
     katAlan.querySelectorAll('.cetik').forEach((x) => x.classList.remove('aktif'));
@@ -355,15 +382,16 @@ function emojiListesiCiz() {
   const hedef = $('#emoji-liste');
   let html = '';
   for (const kat of EMOJI_KATEGORILER) {
-    if (aktifKategori !== 'hepsi' && kat.ad !== aktifKategori) continue;
+    const katAd = DIL_ADI === 'tr' ? kat.ad : kat.en;
+    if (aktifKategori !== 'hepsi' && katAd !== aktifKategori) continue;
     const emojiler = arama
-      ? kat.emojiler.filter((e) => kat.ad.toLowerCase().includes(arama) || e === arama)
+      ? kat.emojiler.filter((e) => katAd.toLowerCase().includes(arama) || e === arama)
       : kat.emojiler;
-    if (arama && !emojiler.length && !kat.ad.toLowerCase().includes(arama)) continue;
-    if (aktifKategori === 'hepsi') html += `<div class="kategori-baslik">${kat.ad}</div>`;
+    if (arama && !emojiler.length && !katAd.toLowerCase().includes(arama)) continue;
+    if (aktifKategori === 'hepsi') html += `<div class="kategori-baslik">${katAd}</div>`;
     html += emojiler.map((e) => `<div class="emoji-kutu" data-e="${e}">${e}</div>`).join('');
   }
-  hedef.innerHTML = html || '<div class="kategori-baslik">Sonuç yok</div>';
+  hedef.innerHTML = html || '<div class="kategori-baslik">—</div>';
   hedef.querySelectorAll('.emoji-kutu').forEach((k) => k.addEventListener('click', () => {
     seciliEmoji = k.dataset.e;
     $('#secili-emoji').textContent = seciliEmoji;
@@ -373,16 +401,16 @@ function emojiListesiCiz() {
 $('#emoji-ara').addEventListener('input', emojiListesiCiz);
 
 $('#emoji-kopyala-btn').addEventListener('click', async () => {
-  if (!seciliEmoji) return bildir('Önce bir emoji seç', 'hata');
-  try { await navigator.clipboard.writeText(seciliEmoji); bildir('📋 Kopyalandı: ' + seciliEmoji, 'ok'); }
-  catch { bildir('Kopyalanamadı', 'hata'); }
+  if (!seciliEmoji) return bildir(t('b_once_emoji_sec'), 'hata');
+  try { await navigator.clipboard.writeText(seciliEmoji); bildir(t('b_kopyalandi') + seciliEmoji, 'ok'); }
+  catch { bildir('❌', 'hata'); }
 });
 
 $('#emoji-gonder-btn').addEventListener('click', async () => {
-  if (!seciliEmoji) return bildir('Önce bir emoji seç', 'hata');
+  if (!seciliEmoji) return bildir(t('b_once_emoji_sec'), 'hata');
   const kime = $('#emoji-kime').value;
-  if (!aktifDurumBagli()) return bildir('Önce WhatsApp bağlantısı kur', 'hata');
-  if (!kime) return bildir('Kişi seç', 'hata');
+  if (!aktifDurumBagli()) return bildir(t('b_once_baglan'), 'hata');
+  if (!kime) return bildir(t('b_once_kisi_sec'), 'hata');
   const btn = $('#emoji-gonder-btn');
   btn.disabled = true;
   try {
@@ -391,7 +419,7 @@ $('#emoji-gonder-btn').addEventListener('click', async () => {
       body: JSON.stringify({ emoji: seciliEmoji, kime }),
     }).then((x) => x.json());
     if (r.hata) throw new Error(r.hata);
-    bildir('📤 Emoji gönderildi: ' + seciliEmoji, 'ok');
+    bildir(t('b_emoji_gonderildi') + seciliEmoji, 'ok');
   } catch (e) {
     bildir('❌ ' + e.message, 'hata');
   }
@@ -401,18 +429,24 @@ $('#emoji-gonder-btn').addEventListener('click', async () => {
 /* ---------------- Baglanti butonlari ---------------- */
 $('#baglanti-yenile').addEventListener('click', async () => {
   await fetch('/api/cikis', { method: 'POST' });
-  bildir('Yeni QR hazırlanıyor…');
+  bildir(t('b_yeni_qr'));
 });
 
 $('#baglanti-cikis').addEventListener('click', async () => {
-  if (!confirm('WhatsApp oturumu kapatılsın mı? (Yeniden QR okutman gerekecek)')) return;
+  if (!confirm(t('b_oturum_sorusu'))) return;
   await fetch('/api/cikis', { method: 'POST' });
-  bildir('Oturum kapatıldı');
+  bildir(t('b_oturum_kapandi'));
 });
 
 /* ---------------- Baslangic ---------------- */
 kisileriYukle();
 kutuphaneYukle();
+dilUygula();
 fetch('/api/durum').then((r) => r.json()).then((d) => {
-  if (d.wa === 'bagli') { durumKutu.textContent = DURUM_METIN.bagli; durumKutu.className = 'durum-kutu bagli'; kisileriYukle(); }
+  if (d.wa === 'bagli') {
+    sonWaDurum = 'bagli';
+    durumKutu.textContent = t('durum_bagli');
+    durumKutu.className = 'durum-kutu bagli';
+    kisileriYukle();
+  }
 });
