@@ -63,6 +63,22 @@
       <p class="aciklama" data-i18n="hazir_aciklama">Programla birlikte gelen paket: animasyonlu tepki ve bildirim GIF'leri. Bağlıyken "📤 Gönder" ile tek tıkla sohbete at; "✨ Sticker" ile hareketli sticker yap.</p>
       <div id="hazir-liste" class="izgara"></div>
     </div>
+    <div class="kart">
+      <h2 data-i18n="foto_baslik">📸 Fotoğrafından GIF Yap</h2>
+      <p class="aciklama" data-i18n="foto_aciklama">Bir kişi/manzara fotoğrafı seç, animasyon efektini seç ve GIF'e dönüştür. Kaynak fotoğraf dönüştürmeden hemen sonra silinir.</p>
+      <input id="foto-dosya" type="file" accept=".jpg,.jpeg,.png,.webp">
+      <div class="satir">
+        <select id="foto-efekt">
+          <option value="yaklasma" data-i18n="efekt_yaklasma">🔍 Yaklaşma (Ken Burns)</option>
+          <option value="uzaklasma" data-i18n="efekt_uzaklasma">🔍 Uzaklaşma</option>
+          <option value="nabiz" data-i18n="efekt_nabiz">💓 Nabız (nefes efekti)</option>
+          <option value="sallama" data-i18n="efekt_sallama">🌀 Sallama</option>
+        </select>
+      </div>
+      <button id="foto-btn" class="ana-btn" data-i18n="foto_btn">🎬 GIF Yap</button>
+      <div id="foto-ilerleme" class="ilerleme gizli"><div class="cubuk"><div class="dolgu"></div></div><span class="metin"></span></div>
+      <div id="foto-sonuc" class="sonuc"></div>
+    </div>
   </section>
 
   <!-- KÜTÜPHANE -->

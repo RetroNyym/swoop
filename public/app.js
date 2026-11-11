@@ -374,6 +374,46 @@ $('#yukle-dosya').addEventListener('change', async (e) => {
   kutuphaneYukle();
 });
 
+/* ---------------- Foto -> GIF ---------------- */
+$('#foto-btn').addEventListener('click', async () => {
+  const dosya = $('#foto-dosya').files[0];
+  if (!dosya) { bildir(t('b_once_foto_sec'), 'hata'); return; }
+  const btn = $('#foto-btn');
+  btn.disabled = true;
+  const sonuc = $('#foto-sonuc');
+  sonuc.textContent = '';
+  $('#foto-ilerleme').classList.remove('gizli');
+  ilerlemeCizGif(50, t('foto_yapiliyor'));
+  try {
+    const veri = await new Promise((coz, ret) => {
+      const oku = new FileReader();
+      oku.onload = () => coz(oku.result);
+      oku.onerror = ret;
+      oku.readAsDataURL(dosya);
+    });
+    const r = await fetch('/api/foto-gif', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ veri, efekt: $('#foto-efekt').value }),
+    }).then((x) => x.json());
+    if (r.hata) throw new Error(r.hata);
+    ilerlemeCizGif(100, '✔');
+    $('#foto-ilerleme').classList.add('gizli');
+    bildir(t('foto_ok'), 'ok');
+    $('#foto-dosya').value = '';
+    kutuphaneYukle();
+  } catch (e) {
+    $('#foto-ilerleme').classList.add('gizli');
+    sonuc.className = 'sonuc hata';
+    sonuc.textContent = '❌ ' + e.message;
+  }
+  btn.disabled = false;
+});
+
+function ilerlemeCizGif(yuzde, metin) {
+  $('#foto-ilerleme .dolgu').style.width = yuzde + '%';
+  $('#foto-ilerleme .metin').textContent = metin || '';
+}
+
 /* ---------------- Emojiler ---------------- */
 let emojilerHazir = false;
 let aktifKategori = 'hepsi';

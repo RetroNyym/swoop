@@ -44,10 +44,11 @@ const KISILER_DOSYA = path.join(DATA, 'kisiler.json');
 const PID_DOSYA = path.join(DATA, 'pid.txt');
 const HAZIR_KAYNAK = path.join(KOK, 'hazir-gifler');
 const HAZIR_HEDEF = path.join(DATA, 'hazir-gifler');
+const FOTO_KAYNAK = path.join(DATA, 'foto-kaynak');
 
 const PORT = process.env.PORT || 3560;
 
-for (const d of [DATA, INDIRILENLER, STICKERLAR, CEVIRI, ARACLAR, HAZIR_HEDEF]) {
+for (const d of [DATA, INDIRILENLER, STICKERLAR, CEVIRI, ARACLAR, HAZIR_HEDEF, FOTO_KAYNAK]) {
   fs.mkdirSync(d, { recursive: true });
 }
 fs.writeFileSync(PID_DOSYA, String(process.pid));
@@ -320,6 +321,46 @@ async function medyaGonder(jid, dosyaYolu, secenek = {}) {
   }
   return sock.sendMessage(jid, { video: buf, mimetype: 'video/mp4', gifPlayback: !!secenek.gifOlarak, caption: secenek.baslik || undefined });
 }
+
+/* ---------------- Foto -> GIF ---------------- */
+app.post('/api/foto-gif', async (req, res) => {
+  try {
+    const { veri, efekt = 'yaklasma' } = req.body || {};
+    if (!veri || !/^data:image\//.test(veri)) return res.status(400).json({ hata: 'Invalid image' });
+    if (!['yaklasma', 'uzaklasma', 'nabiz', 'sallama'].includes(efekt)) return res.status(400).json({ hata: 'Invalid effect' });
+    await ffmpegHazir();
+
+    const kaynakAd = 'src-' + rastgeleAd() + '.png';
+    const kaynak = path.join(FOTO_KAYNAK, kaynakAd);
+    await fsp.writeFile(kaynak, Buffer.from(veri.slice(veri.indexOf(',') + 1), 'base64'));
+
+    const KareSayisi = 30;
+    const filtre = efekt === 'sallama'
+      ? `[0:v]scale=420:420:force_original_aspect_ratio=increase,crop=420:420,crop=360:360:x='(iw-360)/2+8*sin(2*PI*n/8)':y='(ih-360)/2+8*cos(2*PI*n/8)',split[a][b];[a]palettegen[p];[b][p]paletteuse[out]`
+      : (() => {
+          const z = {
+            yaklasma: `1+0.18*on/${KareSayisi}`,
+            uzaklasma: `1.18-0.18*on/${KareSayisi}`,
+            nabiz: `1+0.05*sin(2*PI*on/15)`,
+          }[efekt];
+          return `[0:v]scale=360:360:force_original_aspect_ratio=increase,crop=360:360,zoompan=z='${z}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=${KareSayisi}:s=360x360:fps=12,split[a][b];[a]palettegen[p];[b][p]paletteuse[out]`;
+        })();
+
+    const hedefAd = 'foto-' + efekt + '-' + rastgeleAd() + '.gif';
+    const hedef = path.join(INDIRILENLER, hedefAd);
+    await new Promise((coz, ret) => {
+      spawn(FFMPEG, ['-y', '-hide_banner', '-loglevel', 'error', '-i', kaynak,
+        '-filter_complex', filtre, '-map', '[out]', '-loop', '0', hedef], { windowsHide: true })
+        .on('exit', (k) => (k === 0 ? coz() : ret(new Error('GIF conversion failed'))));
+    });
+    await fsp.rm(kaynak, { force: true }); // kisisel foto kaynak dosyasini sil
+
+    const kayit = kutuphaneyeEkle(hedef, hedefAd.replace('.gif', ''), true);
+    res.json({ ok: true, kayit });
+  } catch (e) {
+    res.status(500).json({ hata: e.message });
+  }
+});
 
 /* ---------------- API ---------------- */
 app.get('/api/durum', (req, res) => {

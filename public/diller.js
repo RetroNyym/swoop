@@ -45,6 +45,15 @@ const DILLER = {
     hazir_baslik: "🎬 Hazır GIF Kütüphanesi",
     hazir_aciklama: "Programla birlikte gelen paket: animasyonlu tepki ve bildirim GIF'leri. Bağlıyken \"📤 Gönder\" ile tek tıkla sohbete at; \"✨ Sticker\" ile hareketli sticker yap.",
 
+    foto_baslik: "📸 Fotoğrafından GIF Yap",
+    foto_aciklama: "Bir kişi/manzara fotoğrafı seç, animasyon efektini seç ve GIF'e dönüştür. Kaynak fotoğraf dönüştürmeden hemen sonra silinir.",
+    efekt_yaklasma: "🔍 Yaklaşma (Ken Burns)",
+    efekt_uzaklasma: "🔍 Uzaklaşma",
+    efekt_nabiz: "💓 Nabız (nefes efekti)",
+    efekt_sallama: "🌀 Sallama",
+    foto_btn: "🎬 GIF Yap",
+    foto_ok: "📸 GIF hazır! Kütüphaneye eklendi.",
+
     emoji_baslik: "😀 Emoji Kütüphanesi",
     emoji_ara_ph: "Ara… (ör: kalp, kedi, gülümseme)",
     kategori_hepsi: "Hepsi",
@@ -86,6 +95,8 @@ const DILLER = {
     b_oturum_kapandi: "Oturum kapatıldı",
     b_oturum_sorusu: "WhatsApp oturumu kapatılsın mı? (Yeniden QR okutman gerekecek)",
     b_silme_sorusu: "Bu öğe silinsin mi?",
+    b_once_foto_sec: "Önce bir fotoğraf seç",
+    foto_yapiliyor: "GIF oluşturuluyor…",
     s_kisi_numara_gerekli: "Kişi veya numara seç",
   },
   en: {
@@ -133,6 +144,15 @@ const DILLER = {
     hazir_baslik: "🎬 Built-in GIF Library",
     hazir_aciklama: "Ships with the app: animated reaction & notification GIFs. When connected, send them to a chat with \"📤 Send\" or turn them into animated stickers with \"✨ Sticker\".",
 
+    foto_baslik: "📸 Turn a Photo into a GIF",
+    foto_aciklama: "Pick a person/landscape photo, choose an animation effect and convert it into a GIF. The source photo is deleted right after conversion.",
+    efekt_yaklasma: "🔍 Zoom in (Ken Burns)",
+    efekt_uzaklasma: "🔍 Zoom out",
+    efekt_nabiz: "💓 Pulse (breathing)",
+    efekt_sallama: "🌀 Shake",
+    foto_btn: "🎬 Make GIF",
+    foto_ok: "📸 GIF ready! Added to the library.",
+
     emoji_baslik: "😀 Emoji Library",
     emoji_ara_ph: "Search… (e.g. heart, cat, smile)",
     kategori_hepsi: "All",
@@ -174,6 +194,8 @@ const DILLER = {
     b_oturum_kapandi: "Logged out",
     b_oturum_sorusu: "Log out of WhatsApp? (You will need to scan the QR again)",
     b_silme_sorusu: "Delete this item?",
+    b_once_foto_sec: "Pick a photo first",
+    foto_yapiliyor: "Creating the GIF…",
     s_kisi_numara_gerekli: "Pick a contact or enter a number",
   }
 };
