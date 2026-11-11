@@ -1,0 +1,6 @@
+# Gizli/kişisel veriler — ASLA yuklemeyin
+data/
+node_modules/
+*.log
+.DS_Store
+Thumbs.db

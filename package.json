@@ -1,0 +1,16 @@
+{
+  "name": "swoop",
+  "version": "1.0.0",
+  "description": "Swoop - Twitter video/GIF indirici + WhatsApp gonderici + sticker & emoji kutuphanesi",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.16",
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.33.5",
+    "socket.io": "^4.8.1"
+  }
+}

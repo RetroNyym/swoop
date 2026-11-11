@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Swoop — Twitter → WhatsApp</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="logo">🐦➡️📱 Swoop</div>
+  <div id="wa-durum" class="durum-kutu bagli-degil">Bağlı değil</div>
+</header>
+
+<nav>
+  <button class="sekme aktif" data-hedef="indir">🐦 Twitter İndir</button>
+  <button class="sekme" data-hedef="kutuphane">📚 Kütüphane</button>
+  <button class="sekme" data-hedef="stickerlar">✨ Stickerlar</button>
+  <button class="sekme" data-hedef="emojiler">😀 Emojiler</button>
+  <button class="sekme" data-hedef="baglanti">📱 WhatsApp Bağlantı</button>
+</nav>
+
+<main>
+  <!-- İNDİRME -->
+  <section id="sekme-indir" class="panel aktif">
+    <div class="kart">
+      <h2>🐦 Swoop — Twitter Video / GIF İndir</h2>
+      <p class="aciklama">Tweet (veya x.com) linkini yapıştır. Video mp4 olarak iner; Twitter GIF'leri de mp4 olarak iner ve WhatsApp'ta GIF gibi oynar.</p>
+      <input id="tweet-url" type="text" placeholder="https://x.com/kullanici/status/123456789..." spellcheck="false">
+      <div class="satir">
+        <select id="kalite">
+          <option value="en-iyi">En iyi kalite</option>
+          <option value="720">En fazla 720p</option>
+          <option value="480">En fazla 480p</option>
+        </select>
+        <label class="onay"><input id="oto-gonder" type="checkbox"> İndirince WhatsApp'a gönder</label>
+      </div>
+      <div id="oto-gonder-alan" class="satir gizli">
+        <select id="oto-kime"><option value="">Kişi seç…</option></select>
+        <input id="oto-baslik" type="text" placeholder="Açıklama (isteğe bağlı)">
+      </div>
+      <button id="indir-btn" class="ana-btn">⬇️ İndir</button>
+      <div id="indir-ilerleme" class="ilerleme gizli"><div class="cubuk"><div class="dolgu"></div></div><span class="metin"></span></div>
+      <div id="indir-sonuc" class="sonuc"></div>
+    </div>
+
+    <div class="kart">
+      <h2>📥 Kendi dosyanı ekle</h2>
+      <p class="aciklama">Bilgisayarından GIF, resim veya video seçip kütüphaneye ekle; sonra sticker yapabilir veya WhatsApp'a gönderebilirsin.</p>
+      <input id="yukle-dosya" type="file" multiple accept=".mp4,.gif,.webp,.jpg,.jpeg,.png,.webm,.mov">
+      <div id="yukle-sonuc" class="sonuc"></div>
+    </div>
+  </section>
+
+  <!-- KÜTÜPHANE -->
+  <section id="sekme-kutuphane" class="panel">
+    <div class="kart">
+      <h2>📚 Kütüphane</h2>
+      <div class="filtre">
+        <button class="f-btn aktif" data-tur="hepsi">Hepsi</button>
+        <button class="f-btn" data-tur="video">🎬 Video</button>
+        <button class="f-btn" data-tur="gif">🎞 GIF</button>
+        <button class="f-btn" data-tur="resim">🖼 Resim</button>
+        <button class="f-btn" data-tur="sticker">✨ Sticker</button>
+      </div>
+      <div id="kutuphane-liste" class="izgara"></div>
+    </div>
+  </section>
+
+  <!-- STICKERLAR -->
+  <section id="sekme-stickerlar" class="panel">
+    <div class="kart">
+      <h2>✨ Sticker Kütüphanesi</h2>
+      <p class="aciklama">Kütüphanedeki GIF/resimlerin üzerine "Sticker Yap" dersen, 512×512 WhatsApp sticker'ı burada görünür. Bağlıyken tek tıkla sohbete sticker atabilirsin.</p>
+      <div id="sticker-liste" class="izgara"></div>
+    </div>
+  </section>
+
+  <!-- EMOJILER -->
+  <section id="sekme-emojiler" class="panel">
+    <div class="kart">
+      <h2>😀 Emoji Kütüphanesi</h2>
+      <input id="emoji-ara" type="text" placeholder="Ara… (ör: kalp, kedi, gülümseme)">
+      <div id="emoji-kategoriler" class="cetikler"></div>
+      <div id="emoji-liste" class="emoji-izgara"></div>
+    </div>
+    <div class="kart">
+      <h2>📤 Emoji Gönder</h2>
+      <div class="satir">
+        <span id="secili-emoji" class="buyuk-emoji">👆</span>
+        <select id="emoji-kime"><option value="">Kişi seç…</option></select>
+        <button id="emoji-gonder-btn" class="ana-btn kucuk">WhatsApp'a Gönder</button>
+        <button id="emoji-kopyala-btn" class="ikincil-btn kucuk">Kopyala</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BAGLANTI -->
+  <section id="sekme-baglanti" class="panel">
+    <div class="kart merkez">
+      <h2>📱 WhatsApp Bağlantısı</h2>
+      <p class="aciklama">WhatsApp'ta <b>Bağlı Cihazlar → Cihaz Bağla</b> yolunu izleyip QR kodu okut.</p>
+      <div id="qr-alan">
+        <div id="qr-bekleme">Bağlantı bekleniyor…</div>
+        <img id="qr-kod" class="gizli" alt="QR Kodu">
+      </div>
+      <div id="baglanti-mesaj" class="sonuc"></div>
+      <div class="satir merkez-satir">
+        <button id="baglanti-yenile" class="ikincil-btn kucuk">🔄 Yeniden Bağlan</button>
+        <button id="baglanti-cikis" class="ikincil-btn kucuk kirmizi">🚪 Oturumu Kapat</button>
+      </div>
+      <p class="uyari">⚠️ Bu program resmi olmayan bir kütüphane (Baileys) kullanır. WhatsApp Web gibi çalışır. Aşırı/istenmeyen mesaj gönderimi hesabın askıya alınmasına yol açabilir; sorumlu kullanın.</p>
+    </div>
+  </section>
+</main>
+
+<!-- GÖNDERME MODALI -->
+<div id="gonder-modal" class="modal gizli">
+  <div class="modal-icerik">
+    <h3 id="gonder-modal-baslik">WhatsApp'a Gönder</h3>
+    <div id="gonder-onizleme" class="gonder-onizleme"></div>
+    <select id="gonder-kime"><option value="">Kişi seç…</option></select>
+    <input id="gonder-numara" type="text" placeholder="…veya numara yaz: 905XXXXXXXXX">
+    <input id="gonder-baslik" type="text" placeholder="Açıklama (isteğe bağlı)">
+    <label id="gif-onay-satiri" class="onay gizli"><input id="gonder-gif" type="checkbox" checked> GIF olarak gönder (hareketli oynar)</label>
+    <div class="satir merkez-satir">
+      <button id="gonder-onay" class="ana-btn kucuk">✅ Gönder</button>
+      <button id="gonder-iptal" class="ikincil-btn kucuk">Vazgeç</button>
+    </div>
+    <div id="gonder-sonuc" class="sonuc"></div>
+  </div>
+</div>
+
+<div id="bildirim" class="bildirim gizli"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/emojiler.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
