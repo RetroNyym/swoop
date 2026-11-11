@@ -26,6 +26,7 @@ Kuş (Twitter) süzülür, paketi telefonuna (WhatsApp) bırakır. 🪶
 | 📚 **Kütüphane** | İndirilen tüm medyalar tek ekranda; bilgisayarından dosya da ekleyebilirsin |
 | ✨ **Sticker Üretici** | Herhangi bir resim/GIF → 512×512 WhatsApp sticker'ı (animasyonlu GIF'ler hareketli kalır) |
 | 🎞 **GIF Gönderimi** | GIF'ler WhatsApp'ta GIF olarak oynar |
+| 🎬 **Hazır GIF Paketi** | Programla gelen animasyonlu tepki/bildirim GIF'leri — çevrimdışı bile çalışır |
 | 😀 **Emoji Kütüphanesi** | Kategorili arama; kopyala veya doğrudan sohbete gönder |
 | 🌍 **TR / EN** | Panel arayüzü iki dilli — üstteki düğmeyle değiştir |
 

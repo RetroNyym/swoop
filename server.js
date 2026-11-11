@@ -42,10 +42,12 @@ const FFPROBE = path.join(ARACLAR, 'ffprobe.exe');
 const KUTUPHANE_DOSYA = path.join(DATA, 'kutuphane.json');
 const KISILER_DOSYA = path.join(DATA, 'kisiler.json');
 const PID_DOSYA = path.join(DATA, 'pid.txt');
+const HAZIR_KAYNAK = path.join(KOK, 'hazir-gifler');
+const HAZIR_HEDEF = path.join(DATA, 'hazir-gifler');
 
 const PORT = process.env.PORT || 3560;
 
-for (const d of [DATA, INDIRILENLER, STICKERLAR, CEVIRI, ARACLAR]) {
+for (const d of [DATA, INDIRILENLER, STICKERLAR, CEVIRI, ARACLAR, HAZIR_HEDEF]) {
   fs.mkdirSync(d, { recursive: true });
 }
 fs.writeFileSync(PID_DOSYA, String(process.pid));
@@ -148,7 +150,7 @@ let kutuphane = jsonOku(KUTUPHANE_DOSYA, []);
 
 function kutuphaneKaydet() { jsonYaz(KUTUPHANE_DOSYA, kutuphane); }
 
-function kutuphaneyeEkle(dosyaYolu, ad) {
+function kutuphaneyeEkle(dosyaYolu, ad, hazir = false) {
   const g = path.relative(DATA, dosyaYolu).replace(/\\/g, '/');
   if (kutuphane.some((k) => k.dosya === g)) return kutuphane.find((k) => k.dosya === g);
   const kayit = {
@@ -159,10 +161,29 @@ function kutuphaneyeEkle(dosyaYolu, ad) {
     boyut: fs.existsSync(dosyaYolu) ? fs.statSync(dosyaYolu).size : 0,
     tarih: new Date().toISOString(),
   };
+  if (hazir) kayit.hazir = true;
   kutuphane.unshift(kayit);
   kutuphaneKaydet();
   io.emit('kutuphane:guncel');
   return kayit;
+}
+
+/* ---------------- Hazir GIF paketi ---------------- */
+function hazirGifleriKur() {
+  try {
+    const kaynaklar = fs.readdirSync(HAZIR_KAYNAK).filter((f) => f.toLowerCase().endsWith('.gif'));
+    // kopya klasor bossa paketi kopyala (kullanicinin silmeleri korunur)
+    if (fs.readdirSync(HAZIR_HEDEF).length === 0) {
+      for (const f of kaynaklar) {
+        fs.copyFileSync(path.join(HAZIR_KAYNAK, f), path.join(HAZIR_HEDEF, f));
+      }
+    }
+    for (const f of fs.readdirSync(HAZIR_HEDEF).filter((x) => x.toLowerCase().endsWith('.gif'))) {
+      kutuphaneyeEkle(path.join(HAZIR_HEDEF, f), path.basename(f, '.gif'), true);
+    }
+  } catch (e) {
+    console.error('Hazir GIF kurulum hatasi:', e.message);
+  }
 }
 
 /* ---------------- Kisiler ---------------- */
@@ -489,6 +510,7 @@ app.post('/api/cikis', async (req, res) => {
 /* ---------------- Baslat ---------------- */
 server.listen(PORT, () => {
   console.log(`Swoop calisiyor: http://localhost:${PORT}`);
+  hazirGifleriKur();
   waBaslat();
   ytDlpHazir().catch((e) => console.error('yt-dlp indirme hatasi:', e.message));
   ffmpegHazir().catch((e) => console.error('ffmpeg indirme hatasi:', e.message));

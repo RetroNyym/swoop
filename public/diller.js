@@ -2,6 +2,7 @@
 const DILLER = {
   tr: {
     tab_indir: "🐦 Twitter İndir",
+    tab_hazir: "🎬 Hazır GIFler",
     tab_kutuphane: "📚 Kütüphane",
     tab_stickerlar: "✨ Stickerlar",
     tab_emojiler: "😀 Emojiler",
@@ -40,6 +41,9 @@ const DILLER = {
     sticker_baslik: "✨ Sticker Kütüphanesi",
     sticker_aciklama: "Kütüphanedeki GIF/resimlerin üzerine \"Sticker Yap\" dersen, 512×512 WhatsApp sticker'ı burada görünür. Bağlıyken tek tıkla sohbete sticker atabilirsin.",
     sticker_bos: "Henüz sticker yok. Kütüphanedeki GIF/resimlere \"✨ Sticker\" butonuna bas.",
+
+    hazir_baslik: "🎬 Hazır GIF Kütüphanesi",
+    hazir_aciklama: "Programla birlikte gelen paket: animasyonlu tepki ve bildirim GIF'leri. Bağlıyken \"📤 Gönder\" ile tek tıkla sohbete at; \"✨ Sticker\" ile hareketli sticker yap.",
 
     emoji_baslik: "😀 Emoji Kütüphanesi",
     emoji_ara_ph: "Ara… (ör: kalp, kedi, gülümseme)",
@@ -86,6 +90,7 @@ const DILLER = {
   },
   en: {
     tab_indir: "🐦 Twitter Download",
+    tab_hazir: "🎬 GIF Pack",
     tab_kutuphane: "📚 Library",
     tab_stickerlar: "✨ Stickers",
     tab_emojiler: "😀 Emojis",
@@ -124,6 +129,9 @@ const DILLER = {
     sticker_baslik: "✨ Sticker Library",
     sticker_aciklama: "Press \"Sticker\" on any GIF/image in the library and a 512×512 WhatsApp sticker appears here. When connected, send it to a chat with one click.",
     sticker_bos: "No stickers yet. Press the \"✨ Sticker\" button on a GIF/image in the Library.",
+
+    hazir_baslik: "🎬 Built-in GIF Library",
+    hazir_aciklama: "Ships with the app: animated reaction & notification GIFs. When connected, send them to a chat with \"📤 Send\" or turn them into animated stickers with \"✨ Sticker\".",
 
     emoji_baslik: "😀 Emoji Library",
     emoji_ara_ph: "Search… (e.g. heart, cat, smile)",

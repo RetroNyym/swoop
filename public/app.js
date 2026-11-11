@@ -24,6 +24,8 @@ function dilUygula() {
   });
   emojiKategorileriCiz();
   kutuphaneCiz(kutuphaneVerisi);
+  stickerlariCiz(kutuphaneVerisi);
+  hazirCiz(kutuphaneVerisi);
 }
 
 function dilDegistir() {
@@ -54,6 +56,7 @@ $$('.sekme').forEach((b) => b.addEventListener('click', () => {
   aktifSekme = b.dataset.hedef;
   if (aktifSekme === 'kutuphane') kutuphaneYukle();
   if (aktifSekme === 'stickerlar') kutuphaneYukle();
+  if (aktifSekme === 'hazir') kutuphaneYukle();
   if (aktifSekme === 'emojiler' && !emojilerHazir) emojiKategorileriCiz();
 }));
 
@@ -199,6 +202,7 @@ async function kutuphaneYukle() {
     kutuphaneVerisi = await fetch('/api/kutuphane').then((r) => r.json());
     kutuphaneCiz(kutuphaneVerisi);
     stickerlariCiz(kutuphaneVerisi);
+    hazirCiz(kutuphaneVerisi);
   } catch {}
 }
 
@@ -210,6 +214,17 @@ function kutuphaneCiz(liste) {
     return;
   }
   hedef.innerHTML = filtreli.map(ogeHtml).join('');
+  olaylariBag(hedef);
+}
+
+function hazirCiz(liste) {
+  const hedef = $('#hazir-liste');
+  const hazirlar = liste.filter((k) => k.hazir && k.tur === 'gif');
+  if (!hazirlar.length) {
+    hedef.innerHTML = `<p class="aciklama">${t('kutuphane_bos')}</p>`;
+    return;
+  }
+  hedef.innerHTML = hazirlar.map(ogeHtml).join('');
   olaylariBag(hedef);
 }
 

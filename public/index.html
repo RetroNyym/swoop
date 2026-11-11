@@ -17,6 +17,7 @@
 
 <nav>
   <button class="sekme aktif" data-hedef="indir" data-i18n="tab_indir">🐦 Twitter İndir</button>
+  <button class="sekme" data-hedef="hazir" data-i18n="tab_hazir">🎬 Hazır GIFler</button>
   <button class="sekme" data-hedef="kutuphane" data-i18n="tab_kutuphane">📚 Kütüphane</button>
   <button class="sekme" data-hedef="stickerlar" data-i18n="tab_stickerlar">✨ Stickerlar</button>
   <button class="sekme" data-hedef="emojiler" data-i18n="tab_emojiler">😀 Emojiler</button>
@@ -52,6 +53,15 @@
       <p class="aciklama" data-i18n="yukle_aciklama">Bilgisayarından GIF, resim veya video seçip kütüphaneye ekle; sonra sticker yapabilir veya WhatsApp'a gönderebilirsin.</p>
       <input id="yukle-dosya" type="file" multiple accept=".mp4,.gif,.webp,.jpg,.jpeg,.png,.webm,.mov">
       <div id="yukle-sonuc" class="sonuc"></div>
+    </div>
+  </section>
+
+  <!-- HAZIR GIFLER -->
+  <section id="sekme-hazir" class="panel">
+    <div class="kart">
+      <h2 data-i18n="hazir_baslik">🎬 Hazır GIF Kütüphanesi</h2>
+      <p class="aciklama" data-i18n="hazir_aciklama">Programla birlikte gelen paket: animasyonlu tepki ve bildirim GIF'leri. Bağlıyken "📤 Gönder" ile tek tıkla sohbete at; "✨ Sticker" ile hareketli sticker yap.</p>
+      <div id="hazir-liste" class="izgara"></div>
     </div>
   </section>
 
